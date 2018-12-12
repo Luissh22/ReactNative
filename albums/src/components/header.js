@@ -1,6 +1,8 @@
 import React from 'react';
 import { Text, View, SafeAreaView } from 'react-native';
 
+// Props are for communication between parent and child
+// State is for internal representations within components
 const Header = (props) => {
     const { textStyle, viewStyles, safeAreaStyles } = styles;
 

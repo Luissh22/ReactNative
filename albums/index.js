@@ -1,11 +1,16 @@
 import React from 'react';
 // Import destructuring
-import { AppRegistry } from 'react-native';
-import Header from './src/components/header';
+import { AppRegistry, View } from 'react-native';
+import Header from './src/components/Header';
+import AlbumList from './src/components/AlbumList';
 
 // Create component
+// flex: 1 expands component to fill entire content area
 const App = () => (
-    <Header headerText={'Albums'} />
+    <View style={{ flex: 1 }}>
+        <Header headerText={'Albums'} />
+        <AlbumList />
+    </View>
 );
 
 
