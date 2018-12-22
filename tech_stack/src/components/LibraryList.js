@@ -8,8 +8,8 @@ class LibraryList extends React.Component {
 
     // Will be called on every item to be shown on the screen
     // Create components here
-    renderItem (library) {
-        return <ListItem library={library} />
+    renderItem(library) {
+        return <ListItem library={library} />;
     }
 
     render() {
