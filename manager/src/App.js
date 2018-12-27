@@ -1,14 +1,18 @@
 // @flow
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { Provider } from 'react-redux';
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import firebase from 'firebase';
+import ReduxThunk from 'redux-thunk';
 import reducers from './reducers';
+import LoginForm from './components/LoginForm';
+import { Header } from "./components/common";
 
 type Props = {};
 
 class App extends React.Component<Props> {
+
     
     componentWillMount(): void {
         // Initialize Firebase
@@ -20,16 +24,18 @@ class App extends React.Component<Props> {
             storageBucket: 'reactnativemanager-c0764.appspot.com',
             messagingSenderId: '204472921913'
         };
+
         firebase.initializeApp(config);
     }
     
     render() {
+        const store = createStore(reducers, {}, applyMiddleware(ReduxThunk));
         return (
-           <Provider store={createStore(reducers)}>
+           <Provider store={store}>
                <View>
-                   <Text>
-                       Hello, World!
-                   </Text>
+                   <Header headerText='Manager'/>
+                   <LoginForm>
+                   </LoginForm>
                </View>
            </Provider>
         );
