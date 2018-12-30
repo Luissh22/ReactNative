@@ -1,21 +1,26 @@
 // @flow
 import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import { connect } from 'react-redux';
-import { Card, Button, CardSection, Input } from './common';
+import { Card, Button, CardSection, Input, Spinner } from './common';
 import { emailChanged, passwordChanged, loginUser } from "../actions";
-import type { Action, AuthState, UserCredentials } from "../types";
+import type { AuthState, UserCredentials, NavigationProps } from "../types";
+import { Action } from "../types";
+import {EMPLOYEE_LIST} from "../navigation/Screens";
+import { User } from "firebase";
+import type { State } from './types';
 
 type Props = {
-    emailChanged: (text: string) => Action,
-    passwordChanged: (text: string) => Action,
-    loginUser: (credentials: UserCredentials) => Action
-} & AuthState;
-
-type State = {
-    auth: AuthState
-}
+    emailChanged: (text: string) => Action<string>,
+    passwordChanged: (text: string) => Action<string>,
+    loginUser: (credentials: UserCredentials) => Action<User>,
+} & AuthState & NavigationProps;
 
 class LoginForm extends React.Component<Props, State> {
+
+    static navigationOptions = {
+        headerTitle: 'Login',
+    };
 
     onEmailChange(text: string) {
         this.props.emailChanged(text);
@@ -27,7 +32,34 @@ class LoginForm extends React.Component<Props, State> {
 
     onButtonPress() {
         const { email, password } = this.props;
-        this.props.loginUser({email, password});
+        //this.props.loginUser({email, password});
+        this.props.navigation.navigate(EMPLOYEE_LIST);
+    }
+
+    renderError() {
+        if (this.props.error) {
+            return (
+                <View style={{ backgroundColor: 'white' }}>
+                    <Text style={styles.errorTextStyle}>
+                        {this.props.error}
+                    </Text>
+                </View>
+            );
+        }
+    }
+
+    renderButton() {
+        if (this.props.loading) {
+            return (
+                <Spinner size={'large'}/>
+            );
+        }
+
+        return (
+            <Button onPress={this.onButtonPress.bind(this)}>
+                Login
+            </Button>
+        );
     }
 
     render() {
@@ -50,21 +82,30 @@ class LoginForm extends React.Component<Props, State> {
                         value={this.props.password}
                     />
                 </CardSection>
+                {this.renderError()}
                 <CardSection>
-                    <Button onPress={this.onButtonPress.bind(this)}>
-                        Login
-                    </Button>
+                    {this.renderButton()}
                 </CardSection>
             </Card>
         );
     }
 }
 
+const styles = StyleSheet.create({
+    errorTextStyle: {
+        fontSize: 20,
+        alignSelf: 'center',
+        color: 'red'
+    }
+});
+
 const mapStateToProps = (state: State): AuthState => {
-    const { email, password } = state.auth;
+    const { email, password, error, loading } = state.auth;
     return {
         email: email,
-        password: password
+        password: password,
+        error: error,
+        loading: loading
     };
 };
 
